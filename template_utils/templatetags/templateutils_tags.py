@@ -140,5 +140,5 @@ class RangeNode(template.Node):
         self.context_name = context_name
 
     def render(self, context):
-        context[self.context_name] = range(*self.range_args)
+        context[self.context_name] = list(range(*self.range_args))
         return ''

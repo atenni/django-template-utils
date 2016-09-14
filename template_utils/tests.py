@@ -55,7 +55,7 @@ class TemplateWithFilter(object):
     def equals(self, expected):
         """ Asserts that the produced value is the same as the expected. """
         match = self.results['filter'] == expected and \
-            self.results['template'] == unicode(expected)
+            self.results['template'] == str(expected)
         return match
 
 
