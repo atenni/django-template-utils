@@ -1,5 +1,5 @@
 from django import template
-from django.template import resolve_variable, TemplateSyntaxError
+from django.template import TemplateSyntaxError, Variable
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 
@@ -73,7 +73,7 @@ class GroupCheckNode(template.Node):
         self.nodelist = nodelist
 
     def render(self, context):
-        user = resolve_variable('user', context)
+        user = Variable('user').resolve(context)
         if not user.is_authenticated:
             return ''
         try:
