@@ -3,7 +3,7 @@ Subclass of ``template.Node`` for easy context updating.
 
 """
 
-from django.db.models import get_model
+from django.apps import apps
 from django.conf import settings
 from django import template
 
@@ -55,7 +55,8 @@ class GenericContentNode(ContextUpdatingNode):
         self.num = num
         self.varname = varname
         lookup_dict = getattr(settings, 'GENERIC_CONTENT_LOOKUP_KWARGS', {})
-        self.model = get_model(*model.split('.'))
+        self.model = apps.get_model(*model.split('.'))
+
         if self.model is None:
             raise template.TemplateSyntaxError("Generic content tag got invalid model: %s" % model)
         self.query_set = self.model._default_manager.filter(**lookup_dict.get(model, {}))

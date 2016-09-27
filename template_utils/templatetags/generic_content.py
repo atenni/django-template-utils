@@ -5,7 +5,7 @@ Template tags which can do retrieval of content from any model.
 
 
 from django import template
-from django.db.models import get_model
+from django.apps import apps
 
 from template_utils.nodes import ContextUpdatingNode, GenericContentNode
 
@@ -33,7 +33,7 @@ class RetrieveObjectNode(ContextUpdatingNode):
     def __init__(self, model, pk, varname):
         self.pk = template.Variable(pk)
         self.varname = varname
-        self.model = get_model(*model.split('.'))
+        self.model = apps.get_model(*model.split('.'))
         if self.model is None:
             raise template.TemplateSyntaxError("Generic content tag got invalid model: %s" % model)
     
