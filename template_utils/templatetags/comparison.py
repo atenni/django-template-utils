@@ -8,7 +8,7 @@ from template_utils import comparisons
 
 class ComparisonNode(template.Node):
     def __init__(self, comparison, nodelist_true, nodelist_false, negate, *vars):
-        self.vars = map(template.Variable, vars)
+        self.vars = list(map(template.Variable, vars))
         self.comparison = comparison
         self.negate = negate
         self.nodelist_true, self.nodelist_false = nodelist_true, nodelist_false

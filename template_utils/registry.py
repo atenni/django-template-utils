@@ -1,6 +1,6 @@
 from django.conf import settings
-from django.template import add_to_builtins
-from django.utils.importlib import import_module
+from importlib import import_module
+import collections
 
     
 class AlreadyRegistered(Exception):
@@ -39,17 +39,15 @@ class TemplateRegistry(dict):
 comparisons, functions, filters, blocks = TemplateRegistry(), TemplateRegistry(), TemplateRegistry(), TemplateRegistry()
 
 more_builtins = getattr(settings, 'DEFAULT_BUILTIN_TAGS', ())
-if more_builtins:
-    map(add_to_builtins, more_builtins)
 
 for app_name in settings.INSTALLED_APPS:
     try:
-        mod = import_module('.template', app_name)
+        mod = import_module('template', package=app_name)
     except ImportError:
         continue
     for name in dir(mod):
         obj = getattr(mod, name)
-        if callable(obj):
+        if isinstance(obj, collections.Callable):
             if hasattr(obj, 'block'):
                 if hasattr(obj, 'name'):
                     blocks.register(getattr(obj, 'name'), obj)

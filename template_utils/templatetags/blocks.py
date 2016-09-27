@@ -9,7 +9,7 @@ from template_utils import blocks
 class BlockNode(template.Node):
     def __init__(self, name, nodelist, varname, *vars):
         self.name = name
-        self.vars = map(template.Variable, vars)
+        self.vars = list(map(template.Variable, vars))
         self.nodelist = nodelist
         self.varname = varname
     

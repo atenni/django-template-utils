@@ -137,7 +137,7 @@ def do_parse_feed(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 4:
-        raise template.TemplateSyntaxError(u"'%s' tag takes three arguments" % bits[0])
+        raise template.TemplateSyntaxError("'%s' tag takes three arguments" % bits[0])
     return FeedParserNode(bits[1], bits[3])
 
 register = template.Library()

@@ -30,14 +30,14 @@ class FunctionalNode(template.Node):
                 try:
                     return var.resolve(context)
                 except template.VariableDoesNotExist:
-                    return unicode(var)
-            return unicode(var)
+                    return str(var)
+            return str(var)
        
         func = functions[self.func]
         resolve = not (hasattr(func, 'do_not_resolve') and getattr(func, 'do_not_resolve'))
         args = [lookup(var, resolve) for var in self.args]
-        kwargs = dict([(k, lookup(var, resolve)) for k,var in self.kwargs.items()])
-        if isinstance(func, basestring):
+        kwargs = dict([(k, lookup(var, resolve)) for k,var in list(self.kwargs.items())])
+        if isinstance(func, str):
             func = import_function(func)
         if hasattr(func,'takes_context') and getattr(func, 'takes_context'):
             args = [context] + args
@@ -68,7 +68,7 @@ def do_function(parser, token):
 
     """
     varname = None
-    bits = [filter(lambda x: x != '\x00', token) for token in split(' '.join(token.contents.split()))]
+    bits = [[x for x in token if x != '\x00'] for token in split(' '.join(token.contents.split()))]
     if len(bits) > 2 and bits[-2] == 'as':
         varname = bits[-1]
         bits = bits[:-2]

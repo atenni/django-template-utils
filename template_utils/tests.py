@@ -18,57 +18,57 @@ class TemplateTest(TestCase):
     
     def test_numeric(self):
         t = """{% if_less 1 2 %}y{% endif_less %}{% if_less_or_equal 1 2 %}y{% endif_less_or_equal %}{% if_greater 2 1 %}n{% endif_greater %}{% if_greater_or_equal 1 1 %}y{% endif_greater_or_equal %}"""
-        self.assertEquals(render(t), u'yyny')
+        self.assertEqual(render(t), 'yyny')
         
     def test_set_tag(self):
         t = "{% set src='import this' %}{{ src }}"
-        self.assertEquals(render(t), u'import this')
+        self.assertEqual(render(t), 'import this')
         
     def test_del_tag(self):
         t = "{% del test %}{{ test }}"
-        self.assertEquals(render(t,{'test': 'yup'}), u'')
+        self.assertEqual(render(t,{'test': 'yup'}), '')
 
     def test_serialize(self):
         t = "{% serialize json users %}"
         json = render(t, {'users':User.objects.all()})
-        self.assertEquals(deserialize('json', json).next().object.username, 'tester')
+        self.assertEqual(deserialize('json', json).next().object.username, 'tester')
         
     def test_matches(self):
         t = "{% if_matches 'hiya' '\w{4}' %}yup{% endif_matches %}"
-        self.assertEquals(render(t), u'yup')
+        self.assertEqual(render(t), 'yup')
 
     def test_contains(self):
         t = "{% if_contains 'team' 'i' %}yup{% endif_contains %}"
-        self.assertEquals(render(t), u'')
+        self.assertEqual(render(t), '')
         
     def test_divisible_by(self):
         t = "{% if_divisible_by 150 5 %}buzz{% endif_divisible_by %}"
-        self.assertEquals(render(t), u'buzz')
+        self.assertEqual(render(t), 'buzz')
 
     def test_startswith(self):
         t = "{% if_startswith 'python' 'p' %}yup{% endif_startswith %}"
-        self.assertEquals(render(t), u'yup')
+        self.assertEqual(render(t), 'yup')
 
     def test_subset(self):
         t = "{% if_subset l1 l2 %}yup{% endif_subset %}"
-        self.assertEquals(render(t, {'l1':[2,3], 'l2':range(5)}), u'yup')
+        self.assertEqual(render(t, {'l1':[2,3], 'l2':list(range(5))}), 'yup')
 
     def test_negate(self):
         t = "{% if_startswith 'python' 'p' negate %}yup{% endif_startswith %}"
-        self.assertEquals(render(t), u'')
+        self.assertEqual(render(t), '')
         
     def test_negate_else(self):
         t = "{% if_startswith 'python' 'p' negate %}yup{% else %}nope{% endif_startswith %}"
-        self.assertEquals(render(t), u'nope')
+        self.assertEqual(render(t), 'nope')
 
     def test_ctx_varname(self):
         t = "{% serialize json users as jsoncontent %}{{ jsoncontent|safe }}"
         json = render(t, {'users':User.objects.all()})
-        self.assertEquals(deserialize('json', json).next().object.username, 'tester')
+        self.assertEqual(deserialize('json', json).next().object.username, 'tester')
         
     def test_hassetting(self):
         t = "{% if_setting 'DEBUG' %}debug{% endif_setting %}"
-        self.assertEquals(render(t), u'debug')
+        self.assertEqual(render(t), 'debug')
 
     def test_hash(self):
         ctx = {'foo':'bar'}
@@ -81,11 +81,11 @@ class TemplateTest(TestCase):
         
     def test_greater(self):
         t = '{% if_greater 2 1 %}yup{% endif_greater %}'
-        self.assertEquals(render(t), u'yup')
+        self.assertEqual(render(t), 'yup')
         
     def test_block(self):
         t = '{% render_var as myvar %}hallowtf{% endrender_var %}{{ myvar }}'
-        self.assertEquals(render(t), 'hallowtf')
+        self.assertEqual(render(t), 'hallowtf')
         
     # To test this next one:
     #   get markdown (pip install markdown)
@@ -94,4 +94,4 @@ class TemplateTest(TestCase):
     if hasattr(settings, 'DEFAULT_BUILTIN_TAGS') and 'django.contrib.markup' in settings.INSTALLED_APPS:
         def test_defaults(self):
                 t = "{{ src|markdown }}"
-                self.assertEquals(render(t, {'src':'`i`'}), u'<p><code>i</code></p>')
+                self.assertEqual(render(t, {'src':'`i`'}), '<p><code>i</code></p>')
